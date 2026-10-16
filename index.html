@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Rule of Life</title>
+<meta name="description" content="A personal daily rule: prayer, fasting, habits, training, conduct and a zero-based budget.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Rule of Life">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#EDEFEA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F141C" media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Brygada+1918:wght@500;600&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+</style>
+<style>
+/* Layout: one phone-width column, a fixed bottom tab bar, section labels set in red like manuscript rubrics. */
+:root{
+  --bg:#EDEFEA; --surface:#F8F9F5; --ink:#17212B; --muted:#5C6772; --line:#D3D8D0;
+  --rubric:#9A1F33; --gilt:#86681A; --ok:#2F6B4A; --warn:#9A5B0E; --bad:#A3262E; --on-accent:#FFF8F2;
+  --display:"Brygada 1918",Georgia,"Times New Roman",serif;
+  --body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F141C; --surface:#182029; --ink:#E7E5DC; --muted:#98A2AD; --line:#2A3440;
+  --rubric:#E77A88; --gilt:#D4B25A; --ok:#6FC096; --warn:#E0A552; --bad:#F08A8A; --on-accent:#1A0E10; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F141C; --surface:#182029; --ink:#E7E5DC; --muted:#98A2AD; --line:#2A3440;
+  --rubric:#E77A88; --gilt:#D4B25A; --ok:#6FC096; --warn:#E0A552; --bad:#F08A8A; --on-accent:#1A0E10; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;padding-inline:16px;font-variant-numeric:tabular-nums}
+.wrap{max-width:34rem;margin-inline:auto;padding-block:14px 6.5rem;display:flex;flex-direction:column;gap:14px}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.brand{font-family:var(--display);font-weight:600;font-size:1.35rem;color:var(--rubric);margin:0}
+#status{font-size:.8rem;color:var(--muted)}
+#view{display:flex;flex-direction:column;gap:14px}
+h2{font-family:var(--display);font-weight:600;font-size:1.25rem;margin:0;text-wrap:balance}
+.rub{font-size:.74rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--rubric);margin:0}
+.sec{display:flex;flex-direction:column;gap:8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.note{color:var(--muted);font-size:.86rem;margin:0}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row>.grow{flex:1 1 8rem;min-width:0}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.nav .when{font-family:var(--display);font-size:1.3rem;font-weight:600;text-align:center;flex:1;min-width:0}
+.nav .when small{display:block;font-family:var(--body);font-size:.78rem;font-weight:500;color:var(--muted)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--rubric);outline-offset:2px}
+.btn{background:var(--rubric);color:var(--on-accent);border:0;border-radius:9px;padding:.6rem .9rem;font-weight:600}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:.4rem .65rem;font-size:.86rem}
+.ico{background:transparent;border:1px solid var(--line);border-radius:9px;width:2.5rem;height:2.5rem;font-size:1.1rem;flex:none}
+.x{background:transparent;border:0;color:var(--muted);width:2.2rem;height:2.2rem;font-size:1.2rem;flex:none}
+.in,select,textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:.5rem .6rem;width:100%;min-width:0}
+textarea{min-height:5rem;resize:vertical}
+.in.amt{width:6.2rem;text-align:right;flex:none}
+.in.num{width:4.6rem;text-align:right;flex:none}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--muted);flex:1 1 7rem;min-width:0}
+.item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:transparent;border:0;border-top:1px solid var(--line);padding:.65rem 0}
+.list>.item:first-child,.list>.catrow:first-child{border-top:0}
+.box{width:1.5rem;height:1.5rem;border:1.5px solid var(--muted);border-radius:6px;flex:none;display:grid;place-items:center;font-size:.9rem;color:transparent}
+.on .box{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.on .txt{color:var(--muted);text-decoration:line-through}
+.item .txt{flex:1;min-width:0;overflow-wrap:anywhere}
+.streak{font-size:.78rem;color:var(--gilt);font-weight:600;flex:none}
+.hero{flex-direction:row;align-items:center;gap:16px}
+.hero .big{font-family:var(--display);font-size:1.5rem;font-weight:600;line-height:1.15}
+.chip{display:inline-block;font-size:.76rem;font-weight:600;border:1px solid var(--line);border-radius:99px;padding:.15rem .6rem;color:var(--muted)}
+.chip.fast{color:var(--rubric);border-color:var(--rubric)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.tog{background:transparent;border:1px solid var(--line);border-radius:99px;padding:.45rem .8rem;font-size:.9rem}
+.tog.on{background:var(--rubric);border-color:var(--rubric);color:var(--on-accent)}
+.step{display:flex;align-items:center;gap:8px}
+.step b{min-width:2.4rem;text-align:center;font-size:1.1rem}
+.bar{height:6px;background:var(--line);border-radius:9px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--gilt)}
+.banner{border-radius:12px;padding:14px;border:1px solid var(--line);background:var(--surface)}
+.banner .big{font-family:var(--display);font-size:1.7rem;font-weight:600}
+.banner.zero{border-color:var(--ok)} .banner.zero .big{color:var(--ok)}
+.banner.left .big{color:var(--warn)} .banner.over{border-color:var(--bad)} .banner.over .big{color:var(--bad)}
+.catrow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;border-top:1px solid var(--line);padding:.55rem 0}
+.catrow .nm{min-width:0;overflow-wrap:anywhere}
+.catrow .sub{display:block;font-size:.78rem;color:var(--muted)}
+.rem{min-width:4.6rem;text-align:right;font-weight:600;font-size:.92rem}
+.neg{color:var(--bad)} .pos{color:var(--ok)}
+.ghead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ghead span{font-size:.82rem;color:var(--muted)}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:end}
+.week .col{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.72rem;color:var(--muted)}
+.week .v{width:100%;height:5rem;background:var(--line);border-radius:6px;display:flex;align-items:flex-end;overflow:hidden}
+.week .v i{display:block;width:100%;background:var(--rubric)}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:10px}
+.stat b{display:block;font-family:var(--display);font-size:1.3rem}
+.stat span{font-size:.8rem;color:var(--muted)}
+.focus{font-family:var(--display);font-size:1.15rem;font-weight:500;margin:0;text-wrap:pretty}
+.item .tag{font-size:.74rem;font-weight:600;color:var(--gilt);flex:none}
+.item .lbl{display:block;font-size:.76rem;color:var(--muted)}
+.on .txt:has(.lbl){text-decoration:none}
+.on .txt:has(.lbl) .tt{text-decoration:line-through}
+.sets{display:flex;gap:8px;flex-wrap:wrap}
+.sb{width:2.4rem;height:2.4rem;border-radius:50%;border:1.5px solid var(--line);background:transparent;font-weight:600;font-size:.9rem}
+.sb.on{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.ex{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+.ex:first-of-type{border-top:0;padding-top:0}
+.ex .ghead .nm{font-weight:600;font-size:1rem;color:var(--ink);min-width:0}
+.ex .ghead .dose{font-size:.82rem;font-weight:600;color:var(--gilt);white-space:nowrap}
+.adv{margin:0;padding-left:1.1rem;display:flex;flex-direction:column;gap:8px;font-size:.94rem}
+.ai{white-space:pre-wrap;font-size:.94rem;border-top:1px solid var(--line);padding-top:10px}
+.ai:empty{display:none}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center}
+.tabs div{display:flex;width:100%;max-width:34rem}
+.tabs button{flex:1;min-width:0;background:transparent;border:0;border-top:2px solid transparent;padding:.7rem 0;font-weight:600;font-size:.8rem;color:var(--muted)}
+.tabs button[aria-current="page"]{color:var(--rubric);border-top-color:var(--rubric)}
+@media (prefers-reduced-motion:no-preference){.bar>i,.week .v i{transition:all .25s}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top"><p class="brand">Rule of Life</p><span id="status" aria-live="polite"></span></header>
+  <main id="view"><p class="note">Opening your book…</p></main>
+</div>
+<nav class="tabs" aria-label="Sections"><div>
+  <button data-tab="today">Today</button><button data-tab="grow">Grow</button><button data-tab="path">Path</button><button data-tab="train">Train</button><button data-tab="budget">Budget</button><button data-tab="review">Review</button>
+</div></nav>
+
+<script>
+(function(){
+"use strict";
+var AREAS=[["discipline","Discipline"],["reading","Reading"],["spiritual","Spiritual"],["financial","Financial"],["physical","Physical"],["emotional","Emotional"]];
+var HOURS=["Morning","Third hour","Sixth hour","Ninth hour","Evening","Before sleep","Midnight"];
+var MOODS=["Heavy","Low","Steady","Good","Joyful"];
+/* The path of conduct: four tracks, three steps each, four practices per step. */
+var PATH=[
+ {k:"speech",name:"Speech and communication",stages:[
+  ["Guard the tongue",["Pause and think before you answer.","Speak no gossip. When it starts, change the subject or stay silent.","Go the whole day without complaining aloud.","Say please, thank you and I'm sorry plainly and often."]],
+  ["Listen and speak clearly",["Listen to the end without interrupting.","Ask one real question about the other person and listen to the answer.","Make your point in three sentences or fewer.","Look at people and use their name when you speak to them."]],
+  ["Speak with grace",["Disagree calmly: \"I see it differently, because…\"","Give one sincere, specific word of encouragement each day.","Admit a mistake openly, without excuses.","Correct others only in private, and gently."]]]},
+ {k:"manners",name:"Manners",stages:[
+  ["Respect",["Greet people first, warmly.","Be on time, or tell people early if you will be late.","Put your phone away while someone is talking to you.","Stand to greet elders and guests, and serve them first."]],
+  ["Courtesy",["Keep every small promise you make.","Return what you borrow, on time and in good order.","Clean up after yourself, at home and away.","Thank people for help or gifts with a call or a message."]],
+  ["Humility",["Do one helpful thing without being asked or seen.","Let others go first and speak first.","Receive correction without defending yourself, and say thank you.","Do not boast. Let your work speak for you."]]]},
+ {k:"life",name:"Way of life",stages:[
+  ["Order",["Sleep and wake at set times.","Make your bed and tidy your space each morning.","Dress neatly and keep yourself well groomed.","Plan tomorrow the night before."]],
+  ["Self-control",["Keep social media to a set time each day.","Finish one hard task before any easy pleasure.","Eat at set times, without mindless snacking.","Keep your word to yourself: do what you planned."]],
+  ["Steadfastness",["Keep your rule on days you do not feel like it.","Spend an hour each week reviewing your life and goals.","Choose company that makes you better.","Give some time each week to serving others or the church."]]]},
+ {k:"knowledge",name:"Knowledge",stages:[
+  ["Daily learning",["Read 10 pages of a good book.","Learn one new word or fact and use it today.","Follow trustworthy news for 10 minutes.","Read today's Scripture and write down one line."]],
+  ["Understanding",["Sum up what you read in three sentences.","Learn your faith: the Creed, the feasts and saints, the meaning of the Liturgy.","Study a skill for your work for 20 minutes.","Learn about money: one article or chapter each week."]],
+  ["Wisdom",["Explain something you learned to someone else.","Read one book a month outside your usual interests.","Ask a wiser person for counsel and write down what they say.","Write a short weekly reflection: what I learned, and how I will live it."]]]}
+];
+/* Daily lessons: ideas from these books, summarized in our own words (not quotations). [theme, source, idea, practice] */
+var LESSONS=[
+ ["Discipline","Ryan Holiday, Discipline Is Destiny","Discipline begins with the body. Master sleep, food and movement before chasing bigger ambitions.","Do your hardest physical task first today."],
+ ["Discipline","Ryan Holiday, Discipline Is Destiny","Self-command is not a trait you have. It is a choice you make many times a day.","Notice three moments today when you chose the harder right thing."],
+ ["Discipline","Ryan Holiday, Discipline Is Destiny","Knowing when you have had enough is a skill. Moderation is strength, not weakness.","Stop one thing today, food or screens, at the point of enough."],
+ ["Discipline","Ryan Holiday, Discipline Is Destiny","Be strict with yourself and generous with others. High standards are for your own conduct.","Let someone else's mistake pass today without comment."],
+ ["Discipline","Ryan Holiday, Discipline Is Destiny","How you do small things is how you do everything. Care in little tasks builds character.","Do one routine task today with complete care."],
+ ["Discipline","Ryan Holiday, Discipline Is Destiny","Professionals show up whether or not they feel inspired. Mood follows action.","Start your most important task for 10 minutes, whatever your mood."],
+ ["Emotional","Ryan Holiday, The Obstacle Is the Way","Separate what happened from the story you tell about it. The facts are usually smaller than the fear.","Write the bare facts of one problem, with no adjectives."],
+ ["Discipline","Ryan Holiday, The Obstacle Is the Way","An obstacle is material to work with. Ask what the next small step is, and take it.","Name the next physical action on your biggest obstacle, and do it."],
+ ["Emotional","Ryan Holiday, The Obstacle Is the Way","Some things cannot be changed. Accepting them frees your strength for what can.","Name one thing you will stop resisting today."],
+ ["Emotional","Ryan Holiday, The Obstacle Is the Way","Under pressure, slow down. Panic spends the energy you need to act well.","When you feel rushed, take three slow breaths before acting."],
+ ["Emotional","Ryan Holiday, The Obstacle Is the Way","Every setback can train a virtue: patience, courage or humility.","Ask of today's frustration: which virtue is this training in me?"],
+ ["Thinking","Ryan Holiday, Ego Is the Enemy","Stay a student. The moment you think you know it all, you stop growing.","Ask someone for honest feedback on one thing you do."],
+ ["Discipline","Ryan Holiday, Ego Is the Enemy","Talking about a goal can feel like progress and replace the work. Do more, say less.","Work on a goal today without telling anyone about it."],
+ ["Emotional","Ryan Holiday, Stillness Is the Key","A quiet mind sees clearly. Fewer inputs give you room to think and pray.","Spend 15 minutes with no phone, music or conversation."],
+ ["Emotional","Epictetus, Enchiridion","Some things are up to us: our judgments, choices and actions. Most other things are not.","Sort one worry into what you control and what you do not."],
+ ["Emotional","Epictetus, Enchiridion","We are troubled less by events than by our judgments about them.","Catch one upsetting thought and restate it in neutral words."],
+ ["Emotional","Marcus Aurelius, Meditations","Each morning, expect to meet difficult people, and decide in advance to answer them with patience.","Picture one hard conversation today and your calm reply."],
+ ["Discipline","Marcus Aurelius, Meditations","Do each task as if it mattered fully, without hurry, complaint or show.","Give your full attention to one task, start to finish."],
+ ["Discipline","Marcus Aurelius, Meditations","Accept what happens and make use of it. Even the unwanted can become fuel.","Find one way today's inconvenience can serve you."],
+ ["Discipline","Seneca, Letters","Time is the one thing we cannot earn back. Guard it more carefully than money.","Write down where one hour of today actually went."],
+ ["Discipline","Seneca, Letters","Live simply for a while on purpose, and you lose your fear of having less.","Make today a no-spend day, apart from true needs."],
+ ["Emotional","Seneca, On Anger","End each day with an honest review: what fault did I resist, what did I do well, what will I do better?","Answer those three questions in your evening examen."],
+ ["Emotional","The Stoics","Imagine in advance what could go wrong. A setback you expected loses its power to shake you.","For one plan this week, list what could go wrong and how you would respond."],
+ ["Discipline","The Stoics and the Church Fathers","Remembering that life is short puts your priorities in order.","Ask: if this were my last month, what would I do differently today?"],
+ ["Thinking","Adam Grant, Think Again","Think like a scientist. Treat your opinions as ideas to test, not possessions to defend.","Name one belief you hold and what evidence would change your mind."],
+ ["Thinking","Adam Grant, Think Again","Watch for three habits: preaching to defend, prosecuting to attack, and playing politician to win approval.","After one conversation, notice which of the three you slipped into."],
+ ["Thinking","Adam Grant, Think Again","Confident humility: be sure of your ability to learn, and humble about what you know right now.","Say \"I might be wrong about this\" once today, and mean it."],
+ ["Thinking","Adam Grant, Think Again","Seek out people who challenge you. Disagreement is how you find what you are missing.","Ask someone who disagrees with you to explain their view, then sum it up fairly."],
+ ["Thinking","Adam Grant, Think Again","Plans and even identities need checkups. What fit you last year may not fit who you are becoming.","Ask whether one of your current goals still fits the person you want to be."],
+ ["Discipline","James Clear, Atomic Habits","Small habits compound. Make the good ones obvious and easy, and the bad ones hard.","Prepare tonight to make one good habit easier tomorrow."]
+];
+var LIBRARY=[
+ ["Discipline Is Destiny","Ryan Holiday","Self-control in body, mind and character."],
+ ["The Obstacle Is the Way","Ryan Holiday","Turning problems into progress through perception, action and will."],
+ ["Ego Is the Enemy","Ryan Holiday","Humility as the ground of growth and lasting success."],
+ ["Stillness Is the Key","Ryan Holiday","Quiet, focus and inner peace in a noisy life."],
+ ["Meditations","Marcus Aurelius","An emperor's private notes on duty, patience and death."],
+ ["Enchiridion","Epictetus","A short handbook on what is in our control."],
+ ["Letters from a Stoic","Seneca","Practical letters on time, wealth, anger and friendship."],
+ ["Think Again","Adam Grant","Rethinking, doubting wisely and changing your mind well."],
+ ["Atomic Habits","James Clear","How tiny habits add up to big change."]
+];
+/* Training week, keyed by weekday (0 = Sunday). Each exercise: [id, gym version, calisthenics version, sets, reps, coaching tip]. */
+var PLAN={
+ 1:{t:"Push",m:"Chest, shoulders and triceps",fin:1,ex:[
+  ["bench","Bench press","Push-ups. Progress: incline, full, decline, diamond, archer",4,"6–10","Lower for 2 seconds and keep your shoulder blades pulled back."],
+  ["incl","Incline dumbbell press","Decline push-ups, feet on a chair",3,"8–12","Works the upper chest."],
+  ["ohp","Seated dumbbell shoulder press","Pike push-ups",3,"8–12","Brace your stomach and keep your lower back flat."],
+  ["dips","Dips, assisted if needed","Chair dips, then parallel-bar dips",3,"8–12","Lean forward slightly to work the chest more."],
+  ["tri","Cable triceps pushdown","Diamond push-ups",3,"10–15","Keep your elbows still at your sides."]]},
+ 2:{t:"Core and conditioning",m:"Abs, endurance and fat burning",ex:[
+  ["hang","Hanging knee raises, then leg raises","Lying leg raises, then hanging raises when ready",4,"10–15","Curl your hips up toward your chest. No swinging."],
+  ["crunch","Cable crunch","Crunches with a 2-second squeeze at the top",3,"12–15","Round your spine and pull with your abs, not your arms."],
+  ["plank","Plank","Plank, then hollow-body hold",3,"30–60 s","Squeeze glutes and stomach so your body is one straight line."],
+  ["side","Side plank","Side plank",3,"30 s each side","Keep your hips high."],
+  ["circ","Circuit: rowing machine, kettlebell swings, mountain climbers","Circuit: burpees, mountain climbers, jumping jacks",5,"40 s on, 20 s off","Each set is one round of all three moves. Rest 1 minute between rounds."]]},
+ 3:{t:"Pull",m:"Back and biceps",fin:1,ex:[
+  ["pull","Pull-ups or lat pulldown","Pull-ups. Progress: dead hang, slow negatives, full reps",4,"5–10","Hang fully at the bottom and pull your chest toward the bar."],
+  ["row","Cable or barbell row","Inverted rows under a sturdy table or low bar",3,"8–12","Squeeze your shoulder blades together at the top."],
+  ["face","Face pulls","Superman holds, lying face down",3,"12–15","Builds posture and healthy shoulders."],
+  ["curl","Dumbbell curls","Chin-ups, lowering for 3 seconds",3,"8–12","No swinging. Control the way down."],
+  ["hammer","Hammer curls","Backpack or towel curls",3,"10–12","Builds forearms and thicker arms."]]},
+ 4:{t:"Legs",m:"Legs and lower body",fin:1,ex:[
+  ["squat","Barbell back squat","Bodyweight squats, then Bulgarian split squats",4,"6–10","Knees follow your toes and your chest stays up."],
+  ["rdl","Romanian deadlift","Single-leg hip hinge",3,"8–12","Push your hips back and keep your back flat."],
+  ["lunge","Walking lunges with dumbbells","Walking lunges",3,"10 each leg","Long steps and an upright body."],
+  ["calf","Calf raises","Single-leg calf raises on a step",3,"15–20","Full stretch at the bottom."]]},
+ 5:{t:"Chest and arms",m:"Chest, biceps and triceps",fin:1,ex:[
+  ["dbp","Dumbbell bench press","Wide push-ups",4,"8–12","Full range and a slow lowering."],
+  ["fly","Cable or dumbbell fly","Archer push-ups",3,"10–12","Feel the stretch across your chest."],
+  ["cgb","Close-grip bench press","Close-grip push-ups",3,"8–12","Elbows close to your sides."],
+  ["ss","Superset: curls, then overhead triceps extension","Superset: chin-ups, then bench dips",3,"10–12 each","Do both back to back, then rest."]]},
+ 6:{t:"Endurance",m:"Cardio and mobility",ex:[
+  ["cardio","Run, cycle or row at a steady pace","Run, brisk uphill walk or jump rope",1,"30–45 min","A pace where you can still speak in short sentences."],
+  ["mob","Stretching and mobility","Stretching and mobility",1,"10 min","Hips, hamstrings, chest and shoulders."]]},
+ 0:{t:"Rest",m:"Rest, the Liturgy and an easy walk",ex:[]}
+};
+var FIN=["finab","Ab finisher: hanging leg raises, then a plank","Ab finisher: bicycle crunches, then a plank",2,"15 reps + 45 s","Move straight from one to the other."];
+var BELLY=["Visible abs come mostly from lower body fat. Training builds the muscle; how you eat reveals it. Crunches alone cannot burn fat from your stomach.",
+ "Eat a little less than you burn, not drastically less. Losing about 0.5 to 1% of your body weight a week protects muscle and energy.",
+ "Have protein at every meal: eggs, fish, chicken, yogurt, lentils, chickpeas, beans.",
+ "Cut sugary drinks and juice first, and drink water through the day.",
+ "Sleep 7 to 9 hours. Short sleep makes you hungrier and slows recovery.",
+ "Walk 8,000 to 10,000 steps on most days. It burns fat without draining your training.",
+ "Measure your waist at the navel once a week. It shows fat loss better than the scale.",
+ "Progress rule: when you reach the top of the rep range on every set, add a little weight or move to the harder version.",
+ "Warm up for 5 to 10 minutes first. Stop if you feel sharp pain, and see a doctor before starting if you have a heart, joint or other health condition."];
+function plan(ds){var p=PLAN[parse(ds).getDay()],ex=p.ex.slice();if(p.fin)ex.push(FIN);return{t:p.t,m:p.m,ex:ex,rest:!p.ex.length}}
+function lesson(){var n=Math.floor((parse(S.date)-new Date(2026,0,1))/864e5)+(S.lessonOff||0),L=LESSONS;return L[((n%L.length)+L.length)%L.length]}
+/* Subscriptions */
+function subMonthly(s){var a=s.amount||0;return s.cycle==="year"?Math.round(a/12):s.cycle==="week"?Math.round(a*52/12):a}
+function subNext(s){if(!s.next)return null;var d=s.next,t=iso(new Date()),g=0;while(d<t&&g++<600){d=s.cycle==="week"?shift(d,7):(function(){var x=parse(d);x.setMonth(x.getMonth()+(s.cycle==="year"?12:1));return iso(x)})()}return d}
+function fv(m,months,rate){var i=rate/12;return i?Math.round(m*(Math.pow(1+i,months)-1)/i):m*months}
+function pstate(t){var p=S.settings.path||(S.settings.path={});return p[t.k]||(p[t.k]={stage:0,est:{},focus:null})}
+function pid(t,s,i){return t.k+"-"+s+"-"+i}
+function ptrack(id){var k=id.split("-")[0];return PATH.filter(function(t){return t.k===k})[0]}
+function pText(id){var p=id.split("-"),t=ptrack(id);return t?t.stages[+p[1]][1][+p[2]]:""}
+function focusOf(t){
+  var st=pstate(t),i;if(st.stage>=3)return null;
+  if(st.focus&&st.focus.indexOf(t.k+"-"+st.stage+"-")===0&&!st.est[st.focus])return st.focus;
+  for(i=0;i<4;i++)if(!st.est[pid(t,st.stage,i)])return pid(t,st.stage,i);
+  return null
+}
+function pDays(id){var k=id.split("-")[0],n=0;Object.keys(S.days).forEach(function(ds){var d=S.days[ds];if(d.path&&d.path[k]===id)n++});return n}
+var view=document.getElementById("view"), statusEl=document.getElementById("status");
+var S={tab:"today",date:iso(new Date()),month:iso(new Date()).slice(0,7),settings:null,days:{},budgets:{},edit:false,local:false,error:false};
+var col=null;
+
+/* ---------- helpers ---------- */
+function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function parse(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+(p[2]||1))}
+function shift(s,n){var d=parse(s);d.setDate(d.getDate()+n);return iso(d)}
+function shiftMonth(m,n){var d=parse(m+"-01");d.setMonth(d.getMonth()+n);return iso(d).slice(0,7)}
+function monthName(m){return parse(m+"-01").toLocaleDateString("en-US",{month:"long",year:"numeric"})}
+function uid(){return Math.random().toString(36).slice(2,9)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function clone(o){return JSON.parse(JSON.stringify(o))}
+function fm(c){c=c||0;return(c<0?"-":"")+"$"+(Math.abs(c)/100).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}
+function mv(c){return c?String((c/100).toFixed(2)).replace(/\.00$/,""):""}
+function cents(v){var n=parseFloat(String(v).replace(/[^0-9.\-]/g,""));return isFinite(n)?Math.round(n*100):0}
+function num(v){var n=parseFloat(v);return isFinite(n)?n:0}
+function setPath(o,path,val){var p=path.split(".");for(var i=0;i<p.length-1;i++){if(o[p[i]]==null||typeof o[p[i]]!=="object")o[p[i]]={};o=o[p[i]]}o[p[p.length-1]]=val}
+function getPath(o,path){return path.split(".").reduce(function(a,k){return a==null?a:a[k]},o)}
+
+/* ---------- storage: private per-person documents, or this device when unavailable ---------- */
+var Q={};
+function setStatus(t){statusEl.textContent=t}
+async function load(id){
+  if(col){var s=await col.doc(id).get();return s.exists?clone(s.data()):null}
+  try{var r=localStorage.getItem("rol:"+id);return r?JSON.parse(r):null}catch(e){return null}
+}
+function save(id,getData){
+  var q=Q[id]||(Q[id]={});q.get=getData;q.dirty=true;clearTimeout(q.t);q.t=setTimeout(function(){flush(id)},700);setStatus("Saving…");
+}
+function flush(id){
+  var q=Q[id];if(!q||!q.dirty||q.busy)return;clearTimeout(q.t);q.dirty=false;var data=clone(q.get());
+  if(!col){try{localStorage.setItem("rol:"+id,JSON.stringify(data));setStatus("Saved")}catch(e){setStatus("Could not save on this device")}return}
+  q.busy=true;
+  col.doc(id).set(data).then(function(){setStatus("Saved")},function(){setStatus("Could not save. Check your connection.")})
+    .then(function(){q.busy=false;if(q.dirty)flush(id)});
+}
+function flushAll(){Object.keys(Q).forEach(flush)}
+document.addEventListener("visibilitychange",function(){if(document.hidden)flushAll()});
+window.addEventListener("pagehide",flushAll);
+
+/* ---------- documents ---------- */
+function defaults(){return{kind:"settings",habits:[
+  {id:"h1",area:"discipline",name:"Wake at my set time"},{id:"h2",area:"discipline",name:"Plan tomorrow tonight"},
+  {id:"h3",area:"reading",name:"Read 20 minutes"},{id:"h4",area:"spiritual",name:"Morning prayer"},
+  {id:"h5",area:"spiritual",name:"Scripture reading"},{id:"h6",area:"financial",name:"Log today's spending"},
+  {id:"h7",area:"physical",name:"Move 30 minutes"},{id:"h8",area:"emotional",name:"Evening reflection"}],
+  books:[],debts:[],debtExtra:0,goals:{},subs:[]}}
+function newDay(date){return{kind:"day",date:date,pri:[{t:"",done:false},{t:"",done:false},{t:"",done:false}],habits:{},hours:{},fast:null,scripture:"",prostrations:0,pages:0,workout:0,sleep:0,water:0,weight:0,mood:0,gratitude:"",journal:"",trigger:"",win:"",path:{},train:{},trainDone:false,waist:0}}
+function starterBudget(m){
+  function c(n,x){var o={id:uid(),name:n,planned:0,carry:0};if(x)o[x]=true;return o}
+  function g(n,cs){return{id:uid(),name:n,cats:cs}}
+  return{kind:"budget",month:m,income:[{id:uid(),name:"Paycheck",amount:0}],tx:[],groups:[
+    g("Giving",[c("Tithe and offerings","tithe"),c("Almsgiving")]),g("Saving",[c("Emergency fund","fund")]),
+    g("Housing",[c("Rent or mortgage"),c("Utilities")]),g("Food",[c("Groceries"),c("Eating out")]),
+    g("Transport",[c("Fuel"),c("Car upkeep","fund")]),g("Health",[c("Health and medicine")]),g("Personal",[c("Phone"),c("Clothing"),c("Household and personal care")]),g("Debt",[c("Debt payments")])]}
+}
+/* Guideline share of take-home pay for each starter line; they add up to 100%. */
+var SUGGEST={"tithe and offerings":10,"almsgiving":2,"emergency fund":10,"rent or mortgage":25,"utilities":7,"groceries":10,"eating out":3,"fuel":5,"car upkeep":4,"health and medicine":6,"phone":2,"clothing":3,"household and personal care":3,"debt payments":10};
+function hasDebt(){return S.settings.debts.some(function(x){return(x.bal||0)>0})}
+function sugg(c,inc){
+  var k=(c.name||"").trim().toLowerCase(),p=SUGGEST[k];if(p==null||!inc)return null;
+  if(!hasDebt()){if(k==="debt payments")p=0;if(k==="emergency fund")p=20}
+  return Math.round(inc*p/100)
+}
+function advice(b,s){
+  var out=[],inc=s.inc,save=0,living=0,over=[],overspent=[];
+  if(!inc)return["Enter your income above to see suggested amounts and advice."];
+  b.groups.forEach(function(g){g.cats.forEach(function(c){
+    var gn=g.name.toLowerCase(),p=c.planned||0,sg=sugg(c,inc),sp=s.spent[c.id]||0;
+    if(gn==="saving")save+=p;else if(gn!=="giving")living+=p;
+    if(sg!=null&&p>sg&&p-sg>=1000)over.push([c.name,p,sg]);
+    if(sp>(c.carry||0)+p&&p>0)overspent.push([c.name,sp-(c.carry||0)-p]);
+  })});
+  var rate=Math.round(save/inc*100);
+  out.push("You plan to save "+fm(save)+" a month, "+rate+"% of your income. A common target is 10 to 15%, or more while you build an emergency fund.");
+  if(s.left>0)out.push(fm(s.left)+" has no job yet. Putting it into saving would raise your rate to "+Math.round((save+s.left)/inc*100)+"%.");
+  if(s.left<0)out.push("Your plan is "+fm(-s.left)+" more than your income. Start with the lines furthest above their suggestion.");
+  over.sort(function(a,c){return(c[1]-c[2])-(a[1]-a[2])});
+  var freed=0;over.slice(0,3).forEach(function(o){freed+=o[1]-o[2];out.push(o[0]+": "+fm(o[1])+" planned, suggested "+fm(o[2])+". Bringing it down frees "+fm(o[1]-o[2])+" a month.")});
+  overspent.forEach(function(o){out.push(o[0]+" is "+fm(o[1])+" over plan this month. Move money from another line or slow down until next month.")});
+  if(living>0)out.push("An emergency fund of 3 to 6 months of living costs is "+fm(living*3)+" to "+fm(living*6)+" for you.");
+  var subT=0,subC=0;(S.settings.subs||[]).forEach(function(x){if(x.status==="cancel")subC+=subMonthly(x);else subT+=subMonthly(x)});
+  if(subT>0)out.push("Your subscriptions cost "+fm(subT)+" a month ("+fm(subT*12)+" a year)."+(subT>Math.round(inc*0.03)?" That is more than 3% of your income; tap the status of any you rarely use until it says Cancelling.":"")+(subC?" Cancelling those marked saves "+fm(subC*12)+" a year.":""));
+  if(hasDebt())out.push("With debts listed, one common order is a starter emergency fund of $1,000, then every extra dollar on the smallest debt first.");
+  var gl=S.settings.saveGoal||{};
+  if(gl.amount>0&&gl.months>0){var need=Math.ceil(gl.amount/gl.months),gap=need-save;
+    out.push("To save "+fm(gl.amount)+(gl.name?" for "+gl.name:"")+" in "+gl.months+" month"+(gl.months>1?"s":"")+", set aside "+fm(need)+" a month. "+(gap>0?"Your plan is "+fm(gap)+" short"+(freed>0?"; the trims above would cover "+fm(Math.min(freed,gap))+" of that.":"."):"Your plan already covers it."))}
+  return out
+}
+function day(){return S.days[S.date]||(S.days[S.date]=newDay(S.date))}
+function saveDay(){var d=S.date;save("d_"+d,function(){return S.days[d]})}
+function saveSettings(){save("settings",function(){return S.settings})}
+function saveBudget(){var m=S.month;save("b_"+m,function(){return S.budgets[m]})}
+/* Fasting calendar of the Coptic, Ethiopian and Eritrean churches. Easter by the Julian reckoning, shown in Gregorian dates (valid 1900-2099). */
+function easter(y){var a=y%4,b=y%7,c=y%19,d=(19*c+15)%30,e=(2*a+4*b-d+34)%7,n=d+e+114,dt=new Date(y,Math.floor(n/31)-1,(n%31)+1);dt.setDate(dt.getDate()+13);return dt}
+var FC={};
+function fastInfo(ds){
+  if(ds in FC)return FC[ds];
+  var d=parse(ds),y=d.getFullYear(),md=ds.slice(5),k=Math.round((d-easter(y))/864e5),wd=d.getDay(),r=null;
+  if(k>=-55&&k<=-1)r="Great Lent";
+  else if(k>=-69&&k<=-67)r="Fast of Nineveh";
+  else if(k>=0&&k<=49)r=null;
+  else if(k>=50&&md<="07-11")r="Fast of the Apostles";
+  else if(md>="08-07"&&md<="08-21")r="Fast of the Virgin Mary";
+  else if(md>="11-25"||md<="01-06")r="Fast of the Prophets";
+  else if(md==="01-18")r="Paramoun of Theophany";
+  else if(md>="01-07"&&md<="01-19")r=null;
+  else if(wd===3)r="Wednesday fast";
+  else if(wd===5)r="Friday fast";
+  return FC[ds]=r
+}
+function isSeason(n){return n&&!/^(Wednesday|Friday)/.test(n)}
+function seasonLine(ds){
+  var n=fastInfo(ds),i,s,e,fmt=function(x){return parse(x).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})};
+  if(isSeason(n)){s=ds;while(fastInfo(shift(s,-1))===n)s=shift(s,-1);e=ds;while(fastInfo(shift(e,1))===n)e=shift(e,1);
+    var tot=Math.round((parse(e)-parse(s))/864e5)+1,at=Math.round((parse(ds)-parse(s))/864e5)+1;
+    return tot>1?"Day "+at+" of "+tot+" · ends "+fmt(e):""}
+  for(i=1;i<=200;i++){var x=shift(ds,i),m=fastInfo(x);if(isSeason(m)&&fastInfo(shift(x,-1))!==m)return"Next: "+m+" begins "+fmt(x)+", in "+i+" day"+(i>1?"s":"")}
+  return""
+}
+function isFast(d){return d.fast==null?!!fastInfo(d.date):d.fast}
+function fastLabel(d){return fastInfo(d.date)||"Fast day"}
+function score(d){
+  var total=0,done=0;
+  S.settings.habits.forEach(function(h){total++;if(d.habits&&d.habits[h.id])done++});
+  (d.pri||[]).forEach(function(p){if(p.t){total++;if(p.done)done++}});
+  PATH.forEach(function(t){var on=d.path&&d.path[t.k];if(on||focusOf(t)){total++;if(on)done++}});
+  if(!plan(d.date).rest||d.trainDone){total++;if(d.trainDone)done++}
+  return{done:done,total:total,pct:total?Math.round(done/total*100):0}
+}
+function streak(hid){
+  var t=iso(new Date()),n=0,d=t;
+  if(!(S.days[d]&&S.days[d].habits[hid]))d=shift(d,-1);
+  while(S.days[d]&&S.days[d].habits&&S.days[d].habits[hid]){n++;d=shift(d,-1)}
+  return n
+}
+
+/* ---------- shared pieces ---------- */
+function ring(p){var c=2*Math.PI*26;return'<svg width="68" height="68" viewBox="0 0 68 68" role="img" aria-label="'+p+' percent done"><circle cx="34" cy="34" r="26" fill="none" stroke="var(--line)" stroke-width="7"/><circle cx="34" cy="34" r="26" fill="none" stroke="var(--rubric)" stroke-width="7" stroke-linecap="round" stroke-dasharray="'+(c*p/100).toFixed(1)+" "+c.toFixed(1)+'" transform="rotate(-90 34 34)"/><text x="34" y="39" text-anchor="middle" font-size="15" font-weight="600" fill="var(--ink)">'+p+"%</text></svg>"}
+function dateNav(){
+  var t=iso(new Date()),d=parse(S.date);
+  var label=S.date===t?"Today":S.date===shift(t,-1)?"Yesterday":d.toLocaleDateString("en-US",{weekday:"long"});
+  return'<div class="nav"><button class="ico" data-act="day" data-d="-1" aria-label="Previous day">‹</button><div class="when">'+label+"<small>"+d.toLocaleDateString("en-US",{weekday:"short",month:"long",day:"numeric"})+'</small></div><button class="ico" data-act="day" data-d="1" aria-label="Next day"'+(S.date>=t?" disabled":"")+">›</button></div>"
+}
+function txt(doc,path,ph,val,cls,extra){return'<input class="in '+(cls||"")+'" data-doc="'+doc+'" data-path="'+path+'" placeholder="'+esc(ph||"")+'" value="'+esc(val==null?"":val)+'" aria-label="'+esc(ph||path)+'" '+(extra||"")+">"}
+function money(doc,path,val,label){return txt(doc,path,"0",mv(val),"amt",'data-type="money" inputmode="decimal" aria-label="'+esc(label)+'"')}
+function number(doc,path,val,label){return txt(doc,path,"0",val||"","num",'data-type="num" inputmode="decimal" aria-label="'+esc(label)+'"')}
+function stepper(path,val,label){return'<div class="step"><button class="ico" data-act="step" data-path="'+path+'" data-d="-1" aria-label="Less '+label+'">−</button><b>'+(val||0)+'</b><button class="ico" data-act="step" data-path="'+path+'" data-d="1" aria-label="More '+label+'">+</button></div>'}
+
+/* ---------- Today ---------- */
+function vToday(){
+  var d=day(),sc=score(d),h="";
+  h+=dateNav();
+  if(S.date===iso(new Date()))h+=backupNudge();
+  h+='<section class="card hero" data-live="score">'+ring(sc.pct)+'<div><div class="big">'+(sc.total?sc.done+" of "+sc.total+" kept":"Nothing set yet")+'</div><div class="row" style="margin-top:6px">'+(isFast(d)?'<span class="chip fast">'+esc(fastLabel(d))+'</span>':'<span class="chip">Not a fast day</span>')+"</div></div></section>";
+  h+='<section class="sec"><p class="rub">Three priorities</p><div class="card list">';
+  d.pri.forEach(function(p,i){h+='<div class="row'+(p.done?" on":"")+'"><button class="x" data-act="pri" data-i="'+i+'" aria-pressed="'+!!p.done+'" aria-label="Mark priority '+(i+1)+' done"><span class="box">✓</span></button><div class="grow">'+txt("day","pri."+i+".t","Priority "+(i+1),p.t)+"</div></div>"});
+  h+="</div></section>";
+  var ls=lesson(),lk=d.lesson===ls[2];
+  h+='<section class="sec"><div class="ghead"><p class="rub">Today\'s lesson</p><button class="btn ghost sm" data-act="lessonNext">Show another</button></div><div class="card"><div class="row"><span class="chip">'+esc(ls[0])+'</span><span class="note">'+esc(ls[1])+'</span></div><p class="focus">'+esc(ls[2])+'</p><p class="note"><b>Practice:</b> '+esc(ls[3])+'</p><div class="row"><button class="tog'+(lk?" on":"")+'" data-act="lessonDone" aria-pressed="'+lk+'">'+(lk?"Practiced":"I practiced this today")+'</button></div></div></section>';
+  var pp=PATH.filter(function(t){return focusOf(t)});
+  if(pp.length){h+='<section class="sec"><p class="rub">Path of conduct</p><div class="card list">';
+    pp.forEach(function(t){var f=focusOf(t),on=d.path[t.k]===f;
+      h+='<button class="item'+(on?" on":"")+'" data-act="ptoggle" data-k="'+t.k+'" aria-pressed="'+on+'"><span class="box">✓</span><span class="txt"><span class="lbl">'+esc(t.name)+'</span><span class="tt">'+esc(pText(f))+"</span></span></button>"});
+    h+="</div></section>"}
+  h+='<section class="sec"><div class="ghead"><p class="rub">Daily rule</p><button class="btn ghost sm" data-act="edit">'+(S.edit?"Done":"Edit habits")+"</button></div>";
+  AREAS.forEach(function(a){
+    var hs=S.settings.habits.filter(function(x){return x.area===a[0]});if(!hs.length)return;
+    h+='<div class="card list"><p class="note">'+a[1]+"</p>";
+    hs.forEach(function(x){var on=d.habits[x.id],st=streak(x.id);
+      h+=S.edit?'<div class="item"><span class="txt">'+esc(x.name)+'</span><button class="x" data-act="delHabit" data-id="'+x.id+'" aria-label="Remove '+esc(x.name)+'">×</button></div>'
+        :'<button class="item'+(on?" on":"")+'" data-act="habit" data-id="'+x.id+'" aria-pressed="'+!!on+'"><span class="box">✓</span><span class="txt">'+esc(x.name)+"</span>"+(st>1?'<span class="streak">'+st+" days</span>":"")+"</button>"});
+    h+="</div>"});
+  if(S.edit)h+='<div class="card"><p class="note">Add a habit</p><div class="row"><select id="nh-area" aria-label="Area" style="flex:0 1 9rem">'+AREAS.map(function(a){return'<option value="'+a[0]+'">'+a[1]+"</option>"}).join("")+'</select><div class="grow"><input class="in" id="nh-name" placeholder="Habit name" aria-label="Habit name"></div><button class="btn" data-act="addHabit">Add</button></div></div>';
+  h+="</section>";
+  h+='<section class="sec"><p class="rub">Evening examen</p><div class="card"><p class="note">How was your heart today?</p><div class="chips">'+MOODS.map(function(m,i){return'<button class="tog'+(d.mood===i+1?" on":"")+'" data-act="mood" data-i="'+(i+1)+'" aria-pressed="'+(d.mood===i+1)+'">'+m+"</button>"}).join("")+"</div>"
+    +txt("day","gratitude","One thing I thank God for today",d.gratitude)
+    +'<textarea data-doc="day" data-path="journal" placeholder="Where did I keep my rule, and where did I fall?" aria-label="Reflection">'+esc(d.journal)+"</textarea></div></section>";
+  return h
+}
+
+/* ---------- Grow ---------- */
+function vGrow(){
+  var d=day(),h=dateNav(),kept=HOURS.filter(function(_,i){return d.hours[i]}).length;
+  h+='<section class="sec"><p class="rub">Spiritual</p><div class="card"><div class="ghead"><h2>The seven hours</h2><span>'+kept+' of 7 prayed</span></div><div class="chips">'+HOURS.map(function(n,i){return'<button class="tog'+(d.hours[i]?" on":"")+'" data-act="hour" data-i="'+i+'" aria-pressed="'+!!d.hours[i]+'">'+n+"</button>"}).join("")+"</div></div>"
+    +'<div class="card"><div class="ghead"><h2>Fasting</h2><button class="tog'+(isFast(d)?" on":"")+'" data-act="fast" aria-pressed="'+isFast(d)+'">'+(isFast(d)?"Fasting today":"Not fasting")+'</button></div><div class="row">'+(fastInfo(d.date)?'<span class="chip fast">'+esc(fastInfo(d.date))+'</span>':'<span class="chip">No fast in the calendar today</span>')+'</div>'+(seasonLine(d.date)?'<p class="note">'+esc(seasonLine(d.date))+'</p>':"")+'<p class="note">Fast days follow the calendar of the Coptic, Ethiopian and Eritrean Orthodox churches, with Easter reckoned by the Julian calendar. Your parish may differ by a day; tap the button to change any day.</p></div>'
+    +'<div class="card">'+txt("day","scripture","Today's reading, for example Psalm 50",d.scripture)+'<div class="ghead"><span>Prostrations</span>'+stepper("prostrations",d.prostrations,"prostrations")+"</div></div></section>";
+  h+='<section class="sec"><p class="rub">Reading</p>';
+  S.settings.books.forEach(function(b,i){var p=b.total?Math.min(100,Math.round(b.read/b.total*100)):0;
+    h+='<div class="card"><div class="ghead"><h2>'+esc(b.title)+'</h2><button class="x" data-act="delBook" data-i="'+i+'" aria-label="Remove book">×</button></div><div class="bar"><i style="width:'+p+'%"></i></div><p class="note">'+b.read+(b.total?" of "+b.total:"")+" pages"+(b.total&&b.read>=b.total?" · finished":"")+'</p><div class="row"><input class="in num" id="pg-'+i+'" inputmode="numeric" placeholder="0" aria-label="Pages read today"><button class="btn sm" data-act="pages" data-i="'+i+'">Log pages</button></div></div>'});
+  h+='<div class="card"><p class="note">'+(S.settings.books.length?"Add another book":"Add the book you are reading. Log pages each day to see your progress.")+'</p><div class="row"><div class="grow"><input class="in" id="nb-title" placeholder="Book title" aria-label="Book title"></div><input class="in num" id="nb-total" inputmode="numeric" placeholder="Pages" aria-label="Total pages"><button class="btn" data-act="addBook">Add</button></div><p class="note">Pages read today: '+(d.pages||0)+"</p></div></section>";
+  h+='<section class="sec"><p class="rub">Physical</p><div class="card"><div class="row"><label class="f">Exercise, minutes'+number("day","workout",d.workout,"Exercise minutes")+'</label><label class="f">Sleep, hours'+number("day","sleep",d.sleep,"Sleep hours")+'</label><label class="f">Weight'+number("day","weight",d.weight,"Weight")+'</label></div><div class="ghead"><span>Glasses of water</span>'+stepper("water",d.water,"water")+"</div></div></section>";
+  h+='<section class="sec"><p class="rub">Emotional</p><div class="card">'+txt("day","trigger","What unsettled me today",d.trigger)+txt("day","win","A small victory today",d.win)+"</div>"
+    +'<div class="card"><h2>Sort what weighs on you</h2><p class="note">From Epictetus: put your effort into what is yours to control, and let the rest go.</p>'+txt("day","worry","What is weighing on me",d.worry)+txt("day","control","The part I control, and my next step",d.control)+txt("day","release","The part I do not control, which I let go",d.release)+"</div>"
+    +'<div class="card"><h2>Think again</h2><p class="note">From Adam Grant: hold beliefs like a scientist holds a hypothesis.</p>'+txt("day","rethink","A belief or opinion I am reconsidering",d.rethink)+txt("day","evidence","What would change my mind",d.evidence)+"</div></section>";
+  return h
+}
+
+/* ---------- Path ---------- */
+function vPath(){
+  var d=day(),h=dateNav();
+  h+='<p class="note">Four tracks of three steps each. Work on one practice at a time in each track. When it comes naturally, usually after about 7 days, mark it established and the next one begins.</p>';
+  PATH.forEach(function(t){
+    var st=pstate(t),f=focusOf(t),estN=Object.keys(st.est).filter(function(k){return st.est[k]}).length+(st.stage>=3?0:0);
+    h+='<section class="sec"><p class="rub">'+esc(t.name)+'</p><div class="card">';
+    if(st.stage>=3){h+='<h2>All three steps complete</h2><div class="bar"><i style="width:100%"></i></div><p class="note">Keep these practices as your way of life. You can go through the track again to renew them.</p><div class="row"><button class="btn ghost sm" data-act="prestart" data-k="'+t.k+'">Go through this track again</button></div></div></section>';return}
+    var sg=t.stages[st.stage];
+    h+='<div class="ghead"><h2>'+esc(sg[0])+"</h2><span>Step "+(st.stage+1)+' of 3</span></div><div class="bar"><i style="width:'+Math.round(estN/12*100)+'%"></i></div>';
+    if(f){var on=d.path[t.k]===f,n=pDays(f);
+      h+='<p class="focus">'+esc(pText(f))+'</p><div class="row"><button class="tog'+(on?" on":"")+'" data-act="ptoggle" data-k="'+t.k+'" aria-pressed="'+on+'">'+(on?"Practiced today":"Mark practiced today")+'</button><span class="note">'+Math.min(n,7)+" of 7 days</span></div>"
+        +'<div class="row"><button class="btn sm'+(n>=7?"":" ghost")+'" data-act="pest" data-k="'+t.k+'">Mark established</button></div>'}
+    else h+='<p class="focus">Step '+(st.stage+1)+' complete.</p><div class="row"><button class="btn" data-act="pnext" data-k="'+t.k+'">'+(st.stage<2?"Begin step "+(st.stage+2)+": "+esc(t.stages[st.stage+1][0]):"Finish this track")+"</button></div>";
+    h+='<div class="list">';
+    sg[1].forEach(function(p,i){var id=pid(t,st.stage,i),es=st.est[id];
+      h+='<button class="item'+(es?" on":"")+'" data-act="pfocus" data-id="'+id+'" aria-label="'+(es?"Established. Tap to practise again: ":"Practise next: ")+esc(p)+'"><span class="box">✓</span><span class="txt">'+esc(p)+"</span>"+(id===f?'<span class="tag">Now</span>':"")+"</button>"});
+    h+="</div></div></section>"});
+  var have={};S.settings.books.forEach(function(b){have[b.title.toLowerCase()]=1});
+  h+='<section class="sec"><p class="rub">Books behind your path</p><div class="card list">';
+  LIBRARY.forEach(function(b){h+='<div class="item"><span class="txt">'+esc(b[0])+'<span class="lbl">'+esc(b[1])+" · "+esc(b[2])+"</span></span>"+(have[b[0].toLowerCase()]?'<span class="tag">On your list</span>':'<button class="btn ghost sm" data-act="addLib" data-title="'+esc(b[0])+'">Add</button>')+"</div>"});
+  h+='</div><p class="note">Adding a book puts it on your reading list in the Grow tab.</p></section>';
+  return h
+}
+
+/* ---------- Train ---------- */
+function vTrain(){
+  var d=day(),h=dateNav(),tr=S.settings.train||{},gym=(tr.mode||"gym")==="gym",p=plan(d.date),wd=parse(d.date).getDay();
+  h+='<div class="chips" role="group" aria-label="Where you train"><button class="tog'+(gym?" on":"")+'" data-act="trainMode" data-m="gym" aria-pressed="'+gym+'">Gym</button><button class="tog'+(!gym?" on":"")+'" data-act="trainMode" data-m="cal" aria-pressed="'+!gym+'">Calisthenics, no equipment</button></div>';
+  h+='<section class="card"><div class="ghead"><h2>'+esc(p.t)+'</h2><span>'+parse(d.date).toLocaleDateString("en-US",{weekday:"long"})+'</span></div><p class="note">'+esc(p.m)+"</p>";
+  if(p.rest)h+='<p class="note">Rest lets muscles grow. Keep moving gently: an easy walk after church, light stretching, and plenty of sleep.</p>';
+  else h+='<p class="note">Warm up first: 5 minutes of brisk walking or jumping jacks, then arm circles and a light set of your first exercise. Rest 60 to 90 seconds between sets.</p>';
+  h+='<div class="row"><button class="tog'+(d.trainDone?" on":"")+'" data-act="trainDone" aria-pressed="'+!!d.trainDone+'">'+(d.trainDone?"Session done":"Mark session done")+"</button></div></section>";
+  if(p.ex.length){h+='<section class="sec"><p class="rub">Exercises</p><div class="card">';
+    p.ex.forEach(function(e){var lg=(d.train&&d.train[e[0]])||{},s=lg.s||0,i,b="";
+      for(i=1;i<=e[3];i++)b+='<button class="sb'+(i<=s?" on":"")+'" data-act="setTap" data-ex="'+e[0]+'" data-n="'+i+'" aria-label="Set '+i+(i<=s?" done":"")+'">'+i+"</button>";
+      h+='<div class="ex"><div class="ghead"><span class="nm">'+esc(gym?e[1]:e[2])+'</span><span class="dose">'+e[3]+(e[3]>1?" × ":" · ")+esc(e[4])+'</span></div><p class="note">'+esc(e[5])+'</p><div class="sets">'+b+"</div>"+txt("day","train."+e[0]+".n",gym?"e.g. 3×10 at 40 lb":"e.g. 3×12 full push-ups",lg.n)+"</div>"});
+    h+="</div></section>"}
+  h+='<section class="sec"><p class="rub">Body check</p><div class="card"><div class="row"><label class="f">Weight'+number("day","weight",d.weight,"Weight")+'</label><label class="f">Waist at the navel'+number("day","waist",d.waist,"Waist")+'</label></div><p class="note">Check once a week, same day and time, before breakfast.</p></div></section>';
+  if(isFast(d))h+='<section class="card"><p class="rub">Fast-day protein</p><p class="note">Keep protein up while fasting from animal foods: shiro and other chickpea dishes, lentils, beans, peas, tofu, peanuts and peanut butter, nuts and seeds. Train lighter if you are fasting until midday, and drink plenty of water after.</p></section>';
+  h+='<section class="sec"><p class="rub">This week</p><div class="card list">';
+  [1,2,3,4,5,6,0].forEach(function(k){var ds=shift(d.date,k-wd+(wd===0?-7:0)+(k===0?7:0)),dd=S.days[ds];
+    h+='<div class="item'+(dd&&dd.trainDone?" on":"")+'"><span class="box">✓</span><span class="txt"><span class="lbl">'+parse(ds).toLocaleDateString("en-US",{weekday:"long"})+'</span><span class="tt">'+esc(PLAN[k].t)+" · "+esc(PLAN[k].m)+"</span></span>"+(ds===d.date?'<span class="tag">Today</span>':"")+"</div>"});
+  h+="</div></section>";
+  h+='<section class="sec"><p class="rub">For a flat stomach and visible abs</p><div class="card"><ul class="adv">'+BELLY.map(function(x){return"<li>"+esc(x)+"</li>"}).join("")+"</ul></div></section>";
+  return h
+}
+
+/* ---------- Budget ---------- */
+function sums(b){
+  var spent={},inc=0,plan=0;
+  b.tx.forEach(function(t){spent[t.cat]=(spent[t.cat]||0)+t.amount});
+  b.income.forEach(function(i){inc+=i.amount||0});
+  b.groups.forEach(function(g){g.cats.forEach(function(c){plan+=c.planned||0})});
+  return{spent:spent,inc:inc,plan:plan,left:inc-plan}
+}
+function vBudget(){
+  var m=S.month,b=S.budgets[m],h='<div class="nav"><button class="ico" data-act="month" data-d="-1" aria-label="Previous month">‹</button><div class="when">'+monthName(m)+'<small>Zero-based budget</small></div><button class="ico" data-act="month" data-d="1" aria-label="Next month">›</button></div>';
+  if(b===undefined)return h+'<p class="note">Opening '+monthName(m)+"…</p>";
+  if(!b){var pm=shiftMonth(m,-1);
+    return h+'<section class="card"><h2>No plan for '+monthName(m)+' yet</h2><p class="note">List your income, then give every dollar a job until nothing is left unplanned.</p><div class="row"><button class="btn" data-act="newBudget">Start with starter categories</button>'+(S.budgets[pm]?'<button class="btn ghost" data-act="copyBudget">Copy '+monthName(pm)+"</button>":"")+"</div></section>"}
+  var s=sums(b);
+  h+='<div data-live="left" class="banner '+(s.left===0&&s.inc>0?"zero":s.left<0?"over":"left")+'"><p class="note">'+(s.left===0&&s.inc>0?"Every dollar has a job":s.left<0?"Planned more than you earn":"Left to budget")+'</p><div class="big">'+fm(Math.abs(s.left))+'</div><p class="note">Income '+fm(s.inc)+" · Planned "+fm(s.plan)+"</p></div>";
+  h+='<div class="row"><button class="btn ghost sm" data-act="fillSugg">Fill empty lines with suggested amounts</button></div>';
+  h+='<section class="sec"><div class="ghead"><p class="rub">Income</p><button class="btn ghost sm" data-act="addIncome">Add income</button></div><div class="card">';
+  b.income.forEach(function(x,i){h+='<div class="row"><div class="grow">'+txt("budget","income."+i+".name","Source",x.name)+"</div>"+money("budget","income."+i+".amount",x.amount,"Amount")+'<button class="x" data-act="delIncome" data-i="'+i+'" aria-label="Remove income">×</button></div>'});
+  h+="</div></section>";
+  h+='<section class="sec"><div class="ghead"><p class="rub">Plan</p><button class="btn ghost sm" data-act="edit">'+(S.edit?"Done":"Edit categories")+"</button></div>";
+  b.groups.forEach(function(g,gi){
+    var gp=0;g.cats.forEach(function(c){gp+=c.planned||0});
+    h+='<div class="card list"><div class="ghead"><h2>'+esc(g.name)+'</h2><span data-live="g_'+g.id+'">'+fm(gp)+" planned</span></div>";
+    g.cats.forEach(function(c,ci){
+      var sp=s.spent[c.id]||0,rem=(c.carry||0)+(c.planned||0)-sp,p="groups."+gi+".cats."+ci;
+      h+='<div class="catrow"><div class="nm">'+(S.edit?txt("budget",p+".name","Category",c.name):esc(c.name))+'<span class="sub" data-live="s_'+c.id+'">Spent '+fm(sp)+(c.fund?" · fund carries over"+(c.carry?" ("+fm(c.carry)+" brought in)":""):"")+(sugg(c,s.inc)>0?" · suggested "+fm(sugg(c,s.inc)):"")+"</span></div>"
+        +(S.edit?'<button class="tog'+(c.fund?" on":"")+'" data-act="fund" data-g="'+gi+'" data-c="'+ci+'" aria-pressed="'+!!c.fund+'">Fund</button><button class="x" data-act="delCat" data-g="'+gi+'" data-c="'+ci+'" aria-label="Remove category">×</button>'
+          :money("budget",p+".planned",c.planned,"Planned for "+c.name)+'<span data-live="r_'+c.id+'" class="rem '+(rem<0?"neg":"")+'">'+fm(rem)+"</span>")+"</div>"});
+    if(S.edit)h+='<div class="row"><div class="grow"><input class="in" id="nc-'+gi+'" placeholder="New category in '+esc(g.name)+'" aria-label="New category"></div><button class="btn sm" data-act="addCat" data-g="'+gi+'">Add</button></div>';
+    h+="</div>"});
+  h+="</section>";
+  var subs=S.settings.subs||[],sm=0,sc=0,soon=[],t7=shift(iso(new Date()),7);
+  subs.forEach(function(x){var mo=subMonthly(x),nx=subNext(x);if(x.status!=="cancel")sm+=mo;else sc+=mo;if(nx&&nx<=t7&&x.status!=="cancel")soon.push([x.name||"Subscription",nx,x.amount])});
+  var stLabel={keep:"Keeping",review:"Reviewing",cancel:"Cancelling"};
+  h+='<section class="sec"><div class="ghead"><p class="rub">Subscriptions</p><button class="btn ghost sm" data-act="addSub">Add subscription</button></div><div class="card">';
+  h+='<p class="note" data-live="subsum">'+(subs.length?"Active subscriptions cost "+fm(sm)+" a month, "+fm(sm*12)+" a year."+(sc?" Cancelling those marked saves "+fm(sc)+" a month, "+fm(sc*12)+" a year.":""):"List every recurring charge: streaming, music, apps, gym, cloud storage, delivery memberships. Check your bank statement for ones you forgot.")+"</p>";
+  soon.forEach(function(x){h+='<p class="note"><span class="chip fast">Renews soon</span> '+esc(x[0])+" · "+fm(x[2])+" on "+parse(x[1]).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})+"</p>"});
+  subs.forEach(function(x,i){var p="subs."+i;
+    h+='<div class="list" style="border-top:1px solid var(--line);padding-top:10px"><div class="row"><div class="grow">'+txt("settings",p+".name","Name, for example Netflix",x.name)+"</div>"+money("settings",p+".amount",x.amount,"Price")+'<button class="x" data-act="delSub" data-i="'+i+'" aria-label="Remove subscription">×</button></div><div class="row"><select data-doc="settings" data-path="'+p+'.cycle" aria-label="Billing cycle" style="flex:0 1 8rem">'+[["month","Monthly"],["year","Yearly"],["week","Weekly"]].map(function(o){return'<option value="'+o[0]+'"'+((x.cycle||"month")===o[0]?" selected":"")+">"+o[1]+"</option>"}).join("")+'</select><input class="in" type="date" data-doc="settings" data-path="'+p+'.next" value="'+esc(x.next||"")+'" aria-label="Next renewal date" style="flex:1 1 9rem"><button class="tog'+(x.status==="cancel"?" on":"")+'" data-act="subStatus" data-i="'+i+'">'+stLabel[x.status||"keep"]+"</button></div></div>"});
+  h+="</div></section>";
+  b.cuts=b.cuts||{};var cutRows=[],cutM=0;
+  b.groups.forEach(function(g){if(g.name.toLowerCase()==="giving"||g.name.toLowerCase()==="saving")return;g.cats.forEach(function(c){if(c.planned>0){cutRows.push(c);cutM+=Math.round(c.planned*(b.cuts[c.id]||0)/100)}})});
+  var totM=cutM+sc;
+  h+='<section class="sec"><p class="rub">Cut and save</p><div class="card"><p class="note">Choose how much you could trim from each line, for example eating out or groceries, and see what it adds up to.</p>';
+  if(!cutRows.length)h+='<p class="note">Plan some amounts above first.</p>';
+  cutRows.forEach(function(c){h+='<div class="catrow"><div class="nm">'+esc(c.name)+'<span class="sub">'+fm(c.planned)+' planned</span></div><select data-doc="budget" data-path="cuts.'+c.id+'" data-type="num" aria-label="Cut for '+esc(c.name)+'" style="width:6.5rem">'+[0,10,25,50,100].map(function(v){return'<option value="'+v+'"'+((b.cuts[c.id]||0)===v?" selected":"")+">"+(v?"Cut "+v+"%":"No cut")+"</option>"}).join("")+'</select><span class="rem" data-live="cut_'+c.id+'">'+(b.cuts[c.id]?"−"+fm(Math.round(c.planned*b.cuts[c.id]/100)):"")+"</span></div>"});
+  h+='<div data-live="cutsum" class="stats" style="margin-top:6px"><div class="stat"><b>'+fm(totM)+'</b><span>Saved each month'+(sc?", with cancelled subscriptions":"")+'</span></div><div class="stat"><b>'+fm(totM*12)+'</b><span>In one year</span></div><div class="stat"><b>'+fm(fv(totM,60,0))+'</b><span>In five years</span></div><div class="stat"><b>'+fm(fv(totM,60,0.04))+'</b><span>In five years at 4% interest</span></div></div>';
+  if(cutM>0)h+='<div class="row"><button class="btn" data-act="applyCuts">Apply cuts and move '+fm(cutM)+" to saving</button></div>";
+  h+='<p class="note">The 4% figure assumes a savings account paying that rate; real rates vary.</p></div></section>';
+  var gl=S.settings.saveGoal||{};
+  h+='<section class="sec"><p class="rub">Saving and advice</p><div class="card"><p class="note">Saving for something? Set a goal and the advice below works it in.</p><div class="row"><label class="f">Goal'+txt("settings","saveGoal.name","For example a trip home",gl.name)+'</label></div><div class="row"><label class="f">Amount'+money("settings","saveGoal.amount",gl.amount,"Goal amount")+'</label><label class="f">Months'+number("settings","saveGoal.months",gl.months,"Months to reach goal")+'</label></div></div>'
+    +'<div class="card"><ul class="adv" data-live="advice">'+advice(b,s).map(function(x){return"<li>"+esc(x)+"</li>"}).join("")+"</ul>"
+    +(S.sample?'<button class="btn ghost sm" data-act="askAi"'+(S.aiBusy?" disabled":"")+'>'+(S.aiBusy?"Thinking…":"Ask Claude for personal advice")+"</button>":"")
+    +'<div class="ai" id="ai-out">'+esc(S.ai||"")+'</div><p class="note">Suggested amounts are common guidelines for take-home pay, not professional financial advice. Adjust them to your life.</p></div></section>';
+  var opts=b.groups.map(function(g){return'<optgroup label="'+esc(g.name)+'">'+g.cats.map(function(c){return'<option value="'+c.id+'">'+esc(c.name)+"</option>"}).join("")+"</optgroup>"}).join(""),names={};
+  b.groups.forEach(function(g){g.cats.forEach(function(c){names[c.id]=c.name})});
+  h+='<section class="sec"><p class="rub">Spending</p><div class="card"><div class="row"><input class="in amt" id="tx-amt" inputmode="decimal" placeholder="0.00" aria-label="Amount spent"><div class="grow"><select id="tx-cat" aria-label="Category">'+opts+'</select></div></div><div class="row"><div class="grow"><input class="in" id="tx-note" placeholder="What was it for" aria-label="Note"></div><input class="in" id="tx-date" type="date" value="'+(iso(new Date()).slice(0,7)===m?iso(new Date()):m+"-01")+'" aria-label="Date" style="flex:0 1 10rem"></div><button class="btn" data-act="addTx">Log spending</button></div>';
+  var tx=b.tx.slice().sort(function(a,c){return a.date<c.date?1:-1}).slice(0,30);
+  if(tx.length){h+='<div class="card list">';tx.forEach(function(t){h+='<div class="item"><span class="txt">'+esc(t.note||names[t.cat]||"Spending")+'<span class="sub note">'+esc(names[t.cat]||"Removed category")+" · "+parse(t.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})+"</span></span><b>"+fm(t.amount)+'</b><button class="x" data-act="delTx" data-id="'+t.id+'" aria-label="Remove entry">×</button></div>'});h+="</div>"}
+  else h+='<p class="note">Nothing logged this month. Each entry lowers what is left in its category.</p>';
+  h+="</section>";
+  var ds=S.settings.debts,order=ds.map(function(x,i){return i}).sort(function(a,c){return(ds[a].bal||0)-(ds[c].bal||0)}),tot=0,mins=0;
+  ds.forEach(function(x){tot+=x.bal||0;mins+=x.min||0});
+  var pay=mins+(S.settings.debtExtra||0),months=pay>0?Math.ceil(tot/pay):0;
+  h+='<section class="sec"><div class="ghead"><p class="rub">Debt snowball</p><button class="btn ghost sm" data-act="addDebt">Add debt</button></div><div class="card">';
+  if(!ds.length)h+='<p class="note">List what you owe. The smallest balance is paid first, then its payment rolls onto the next.</p>';
+  order.forEach(function(i,n){var x=ds[i];h+='<div class="row"><div class="grow">'+txt("settings","debts."+i+".name","Debt name",x.name)+(n===0&&ds.length>1?'<span class="chip fast" style="margin-top:4px">Pay this first</span>':"")+"</div>"+money("settings","debts."+i+".bal",x.bal,"Balance")+money("settings","debts."+i+".min",x.min,"Minimum payment")+'<button class="x" data-act="delDebt" data-i="'+i+'" aria-label="Remove debt">×</button></div>'});
+  if(ds.length)h+='<p class="note">Columns are balance, then minimum payment.</p><div class="ghead"><span>Extra each month</span>'+money("settings","debtExtra",S.settings.debtExtra,"Extra each month")+'</div><p class="note" data-live="debts">Total owed '+fm(tot)+(months?" · about "+months+" month"+(months>1?"s":"")+" to clear at "+fm(pay)+" a month, before interest":"")+"</p>";
+  h+="</div></section>";
+  return h
+}
+
+/* ---------- Review ---------- */
+function vReview(){
+  var t=iso(new Date()),dates=[],i;for(i=6;i>=0;i--)dates.push(shift(t,-i));
+  var h='<div class="nav"><div class="when">This week<small>'+parse(dates[0]).toLocaleDateString("en-US",{month:"short",day:"numeric"})+" to "+parse(t).toLocaleDateString("en-US",{month:"short",day:"numeric"})+"</small></div></div>";
+  var tot={pct:0,n:0,pages:0,work:0,sleep:0,sn:0,hours:0,fast:0,tr:0,pa:0};
+  h+='<section class="card"><p class="note">Share of your rule kept each day</p><div class="week">';
+  dates.forEach(function(ds){var d=S.days[ds],p=d?score(d).pct:0;
+    if(d){tot.pct+=p;tot.n++;tot.pages+=d.pages||0;tot.work+=d.workout||0;if(d.sleep){tot.sleep+=d.sleep;tot.sn++}tot.hours+=Object.keys(d.hours||{}).filter(function(k){return d.hours[k]}).length;if(isFast(d))tot.fast++;if(d.trainDone)tot.tr++;tot.pa+=Object.keys(d.path||{}).length}
+    h+='<div class="col"><span>'+p+'%</span><div class="v"><i style="height:'+p+'%"></i></div><span>'+parse(ds).toLocaleDateString("en-US",{weekday:"narrow"})+"</span><span>"+(d&&d.mood?MOODS[d.mood-1]:"·")+"</span></div>"});
+  h+="</div></section>";
+  h+='<section class="stats"><div class="stat"><b>'+(tot.n?Math.round(tot.pct/7):0)+'%</b><span>Average kept</span></div><div class="stat"><b>'+tot.hours+'</b><span>Prayer hours kept</span></div><div class="stat"><b>'+tot.pages+'</b><span>Pages read</span></div><div class="stat"><b>'+tot.work+'</b><span>Minutes of exercise</span></div><div class="stat"><b>'+(tot.sn?(tot.sleep/tot.sn).toFixed(1):"0")+'</b><span>Average hours of sleep</span></div><div class="stat"><b>'+tot.fast+"</b><span>Fast days</span></div><div class=\"stat\"><b>"+tot.tr+"</b><span>Workouts done</span></div><div class=\"stat\"><b>"+tot.pa+"</b><span>Path practices kept</span></div></section>";
+  h+='<section class="sec"><p class="rub">Streaks</p><div class="card list">';
+  S.settings.habits.forEach(function(x){var st=streak(x.id);h+='<div class="item"><span class="txt">'+esc(x.name)+'</span><span class="streak">'+st+(st===1?" day":" days")+"</span></div>"});
+  h+="</div></section>";
+  h+='<section class="sec"><p class="rub">Path of conduct</p><div class="card list">';
+  PATH.forEach(function(t){var st=pstate(t),n=0;dates.forEach(function(ds){var d=S.days[ds];if(d&&d.path&&d.path[t.k])n++});
+    h+='<div class="item"><span class="txt">'+esc(t.name)+'<span class="lbl">'+(st.stage>=3?"All steps complete":"Step "+(st.stage+1)+" of 3 · "+esc(t.stages[st.stage][0]))+'</span></span><span class="streak">'+n+" of 7 days</span></div>"});
+  h+="</div></section>";
+  h+='<section class="sec"><p class="rub">This month I am working on</p><div class="card">';
+  AREAS.forEach(function(a){h+='<label class="f">'+a[1]+txt("settings","goals."+a[0],"One goal for "+a[1].toLowerCase(),(S.settings.goals||{})[a[0]])+"</label>"});
+  h+="</div></section>";
+  h+=vData();
+  return h
+}
+
+/* ---------- render ---------- */
+var VIEWS={today:vToday,grow:vGrow,path:vPath,train:vTrain,budget:vBudget,review:vReview};
+function paint(full){
+  if(S.error){view.innerHTML='<section class="card"><h2>Your entries could not be opened</h2><p class="note">Nothing was changed. Reload the page to try again.</p></section>';return}
+  var html=VIEWS[S.tab]();
+  if(full!==false){view.innerHTML=html}
+  else{var t=document.createElement("div");t.innerHTML=html;
+    view.querySelectorAll("[data-live]").forEach(function(el){var n=t.querySelector('[data-live="'+el.dataset.live+'"]');if(n){el.innerHTML=n.innerHTML;el.className=n.className}})}
+  document.querySelectorAll(".tabs button").forEach(function(b){if(b.dataset.tab===S.tab)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+}
+async function ensureDay(date){
+  if(S.days[date])return;
+  try{S.days[date]=(await load("d_"+date))||newDay(date)}catch(e){S.days[date]=newDay(date)}
+}
+async function ensureBudget(m){
+  var pm=shiftMonth(m,-1);
+  try{
+    if(S.budgets[pm]===undefined)S.budgets[pm]=await load("b_"+pm);
+    if(S.budgets[m]===undefined)S.budgets[m]=await load("b_"+m);
+  }catch(e){if(S.budgets[m]===undefined)S.budgets[m]=null}
+  if(S.tab==="budget"&&S.month===m)paint();
+}
+function docFor(name){return name==="day"?day():name==="settings"?S.settings:S.budgets[S.month]}
+function saveFor(name){name==="day"?saveDay():name==="settings"?saveSettings():saveBudget()}
+
+/* ---------- events ---------- */
+document.querySelector(".tabs").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-tab]");if(!b||S.error||!S.settings)return;
+  S.tab=b.dataset.tab;S.edit=false;paint();window.scrollTo(0,0);
+  if(S.tab==="budget")ensureBudget(S.month);
+});
+view.addEventListener("change",function(e){
+  var el=e.target,path=el.dataset.path;if(!path)return;
+  var v=el.value,ty=el.dataset.type;
+  if(ty==="money"){v=cents(v);el.value=mv(v)}else if(ty==="num"){v=num(v)}
+  setPath(docFor(el.dataset.doc),path,v);saveFor(el.dataset.doc);paint(false);
+});
+view.addEventListener("click",function(e){
+  var el=e.target.closest("[data-act]");if(!el)return;
+  var a=el.dataset.act,d=day(),st=S.settings,b=S.budgets[S.month],i=+el.dataset.i,g=+el.dataset.g,c=+el.dataset.c,q=function(id){return document.getElementById(id)};
+  if(a==="day"){var nd=shift(S.date,+el.dataset.d);if(nd>iso(new Date()))return;S.date=nd;ensureDay(nd).then(function(){paint()});return}
+  if(a==="month"){S.month=shiftMonth(S.month,+el.dataset.d);S.edit=false;paint();ensureBudget(S.month);return}
+  if(a==="edit"){S.edit=!S.edit}
+  else if(a==="habit"){d.habits[el.dataset.id]=!d.habits[el.dataset.id];saveDay()}
+  else if(a==="pri"){d.pri[i].done=!d.pri[i].done;saveDay()}
+  else if(a==="mood"){d.mood=d.mood===i?0:i;saveDay()}
+  else if(a==="hour"){d.hours[i]=!d.hours[i];saveDay()}
+  else if(a==="fast"){d.fast=!isFast(d);saveDay()}
+  else if(a==="step"){var p=el.dataset.path;d[p]=Math.max(0,(d[p]||0)+(+el.dataset.d)*(p==="prostrations"?(+el.dataset.d>0?1:1):1));saveDay()}
+  else if(a==="addHabit"){var nm=q("nh-name").value.trim();if(!nm)return;st.habits.push({id:uid(),area:q("nh-area").value,name:nm});saveSettings()}
+  else if(a==="delHabit"){st.habits=st.habits.filter(function(x){return x.id!==el.dataset.id});saveSettings()}
+  else if(a==="addBook"){var ti=q("nb-title").value.trim();if(!ti)return;st.books.push({id:uid(),title:ti,total:Math.max(0,Math.round(num(q("nb-total").value))),read:0});saveSettings()}
+  else if(a==="delBook"){st.books.splice(i,1);saveSettings()}
+  else if(a==="pages"){var n=Math.round(num(q("pg-"+i).value));if(n<=0)return;st.books[i].read+=n;d.pages=(d.pages||0)+n;saveSettings();saveDay()}
+  else if(a==="newBudget"){S.budgets[S.month]=starterBudget(S.month);saveBudget()}
+  else if(a==="copyBudget"){var pv=S.budgets[shiftMonth(S.month,-1)],ps=sums(pv),nb=clone(pv);nb.month=S.month;nb.tx=[];
+    nb.groups.forEach(function(gr){gr.cats.forEach(function(ct){ct.carry=ct.fund?(ct.carry||0)+(ct.planned||0)-(ps.spent[ct.id]||0):0})});S.budgets[S.month]=nb;saveBudget()}
+  else if(a==="ptoggle"||a==="pest"||a==="pnext"||a==="prestart"){
+    var tk=PATH.filter(function(x){return x.k===el.dataset.k})[0],ps2=pstate(tk),fo=focusOf(tk);
+    if(a==="ptoggle"){if(!fo)return;if(d.path[tk.k]===fo)delete d.path[tk.k];else d.path[tk.k]=fo;saveDay();paint();return}
+    if(a==="pest"&&fo){ps2.est[fo]=true;ps2.focus=null}
+    if(a==="pnext"){ps2.stage++;ps2.focus=null}
+    if(a==="prestart"){ps2.stage=0;ps2.est={};ps2.focus=null}
+    saveSettings()}
+  else if(a==="pfocus"){var pidv=el.dataset.id,tr=ptrack(pidv),ps3=pstate(tr);if(ps3.est[pidv])ps3.est[pidv]=false;ps3.focus=pidv;saveSettings()}
+  else if(a==="backup"){backup();return}
+  else if(a==="restoreYes"){applyRestore();return}
+  else if(a==="restoreNo"){S.pendingRestore=null;S.restoreError=""}
+  else if(a==="trainMode"){st.train=st.train||{};st.train.mode=el.dataset.m;saveSettings()}
+  else if(a==="trainDone"){d.trainDone=!d.trainDone;saveDay()}
+  else if(a==="setTap"){d.train=d.train||{};var lgx=d.train[el.dataset.ex]||(d.train[el.dataset.ex]={}),nn=+el.dataset.n;lgx.s=(lgx.s||0)>=nn?nn-1:nn;saveDay()}
+  else if(a==="lessonNext"){S.lessonOff=(S.lessonOff||0)+1}
+  else if(a==="lessonDone"){var lt=lesson()[2];d.lesson=d.lesson===lt?"":lt;saveDay()}
+  else if(a==="addLib"){var bt=el.dataset.title;if(!st.books.some(function(x){return x.title.toLowerCase()===bt.toLowerCase()})){st.books.push({id:uid(),title:bt,total:0,read:0});saveSettings()}}
+  else if(a==="addSub"){(st.subs=st.subs||[]).push({id:uid(),name:"",amount:0,cycle:"month",next:"",status:"keep"});saveSettings()}
+  else if(a==="delSub"){st.subs.splice(i,1);saveSettings()}
+  else if(a==="subStatus"){var sx=st.subs[i];sx.status={keep:"review",review:"cancel",cancel:"keep"}[sx.status||"keep"];saveSettings()}
+  else if(a==="applyCuts"){var mvd=0,dest=null;b.groups.forEach(function(gr){var gn=gr.name.toLowerCase();if(gn==="saving"&&!dest)dest=gr.cats[0];if(gn==="giving"||gn==="saving")return;gr.cats.forEach(function(ct){var pc=(b.cuts||{})[ct.id]||0;if(pc&&ct.planned>0){var cut=Math.round(ct.planned*pc/100);ct.planned-=cut;mvd+=cut}})});
+    if(!dest){var sg2={id:uid(),name:"Saving",cats:[{id:uid(),name:"Emergency fund",planned:0,carry:0,fund:true}]};b.groups.splice(1,0,sg2);dest=sg2.cats[0]}
+    dest.planned=(dest.planned||0)+mvd;b.cuts={};saveBudget()}
+  else if(a==="fillSugg"){var si=sums(b).inc;if(!si){var fi=view.querySelector('[data-path="income.0.amount"]');if(fi)fi.focus();setStatus("Enter your income first");return}b.groups.forEach(function(gr){gr.cats.forEach(function(ct){var v=sugg(ct,si);if(!ct.planned&&v)ct.planned=v})});saveBudget()}
+  else if(a==="askAi"){askAi();return}
+  else if(a==="addIncome"){b.income.push({id:uid(),name:"",amount:0});saveBudget()}
+  else if(a==="delIncome"){b.income.splice(i,1);saveBudget()}
+  else if(a==="addCat"){var cn=q("nc-"+g).value.trim();if(!cn)return;b.groups[g].cats.push({id:uid(),name:cn,planned:0,carry:0});saveBudget()}
+  else if(a==="delCat"){b.groups[g].cats.splice(c,1);saveBudget()}
+  else if(a==="fund"){b.groups[g].cats[c].fund=!b.groups[g].cats[c].fund;saveBudget()}
+  else if(a==="addTx"){var am=cents(q("tx-amt").value);if(am<=0||!q("tx-cat").value){q("tx-amt").focus();return}b.tx.push({id:uid(),date:q("tx-date").value||iso(new Date()),cat:q("tx-cat").value,amount:am,note:q("tx-note").value.trim()});saveBudget()}
+  else if(a==="delTx"){b.tx=b.tx.filter(function(x){return x.id!==el.dataset.id});saveBudget()}
+  else if(a==="addDebt"){st.debts.push({id:uid(),name:"",bal:0,min:0});saveSettings()}
+  else if(a==="delDebt"){st.debts.splice(i,1);saveSettings()}
+  else return;
+  paint();
+});
+
+async function askAi(){
+  var b=S.budgets[S.month];if(!b||!S.sample||S.aiBusy)return;
+  var s=sums(b),lines=[];
+  b.groups.forEach(function(g){g.cats.forEach(function(c){lines.push(g.name+" / "+c.name+": planned "+fm(c.planned)+", spent "+fm(s.spent[c.id]||0)+(sugg(c,s.inc)!=null?", guideline "+fm(sugg(c,s.inc)):""))})});
+  var gl=S.settings.saveGoal||{},debts=S.settings.debts.map(function(x){return(x.name||"Debt")+": balance "+fm(x.bal)+", minimum "+fm(x.min)}).join("; ")||"none";
+  var prompt="You are a careful, encouraging budget coach for an Oriental Orthodox Christian who uses a zero-based budget and gives the tithe first. Using only the data below, give 4 to 6 short, specific suggestions to spend wisely and save more this month. Name categories and dollar amounts. Never suggest cutting the tithe. Plain text only: each suggestion on its own line starting with '- ', no headings or bold. End with one line noting this is general guidance, not professional financial advice.\n\nMonth: "+monthName(S.month)+"\nIncome: "+fm(s.inc)+"\nNot yet assigned: "+fm(s.left)+"\nLines:\n"+lines.join("\n")+"\nDebts: "+debts+"\nSavings goal: "+(gl.amount?fm(gl.amount)+(gl.name?" for "+gl.name:"")+" in "+(gl.months||"?")+" months":"none");
+  S.aiBusy=true;S.ai="";paint();
+  try{
+    var r=await S.sample(prompt,{cache:false,onText:function(t){S.ai=t.text;var el=document.getElementById("ai-out");if(el)el.textContent=t.text}});
+    S.ai=r.text;
+  }catch(e){
+    if(e&&e.code==="not_granted")S.sample=null;
+    S.ai=e&&e.code==="rate_limited"?"Too many requests just now. Try again in a minute.":e&&e.code==="not_granted"?"":"Advice from Claude is not available right now. The suggestions above still apply.";
+  }
+  S.aiBusy=false;if(S.tab==="budget")paint();
+}
+
+
+/* ---------- your data: backup and restore (stored on this phone) ---------- */
+function meta(){try{return JSON.parse(localStorage.getItem("rol:meta")||"{}")}catch(e){return{}}}
+function setMeta(m){try{localStorage.setItem("rol:meta",JSON.stringify(m))}catch(e){}}
+function allData(){var o={};try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf("rol:")===0&&k!=="rol:meta"){try{o[k.slice(4)]=JSON.parse(localStorage.getItem(k))}catch(e){}}}}catch(e){}return{app:"rule-of-life",version:1,exported:new Date().toISOString(),docs:o}}
+function daysSinceBackup(){var m=meta();if(!m.lastBackup)return null;return Math.floor((Date.now()-new Date(m.lastBackup).getTime())/864e5)}
+function hasEntries(){return Object.keys(allData().docs).length>0}
+async function backup(){
+  flushAll();
+  var json=JSON.stringify(allData(),null,1),name="rule-of-life-backup-"+iso(new Date())+".json",file;
+  try{file=new File([json],name,{type:"application/json"})}catch(e){file=null}
+  if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+    try{await navigator.share({files:[file],title:"Rule of Life backup"});var m=meta();m.lastBackup=new Date().toISOString();setMeta(m);setStatus("Backup saved");paint();return}
+    catch(e){if(e&&e.name==="AbortError")return}
+  }
+  var blob=new Blob([json],{type:"application/json"}),a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(a.href)},4000);
+  var m2=meta();m2.lastBackup=new Date().toISOString();setMeta(m2);setStatus("Backup saved");paint();
+}
+function readRestore(file){
+  var r=new FileReader();
+  r.onload=function(){
+    try{var o=JSON.parse(r.result);if(!o||o.app!=="rule-of-life"||typeof o.docs!=="object")throw 0;S.pendingRestore=o;S.restoreError=""}
+    catch(e){S.pendingRestore=null;S.restoreError="That file is not a Rule of Life backup. Choose a file named rule-of-life-backup."}
+    paint();
+  };
+  r.readAsText(file);
+}
+function applyRestore(){
+  var o=S.pendingRestore;if(!o)return;
+  try{
+    var del=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf("rol:")===0&&k!=="rol:meta")del.push(k)}
+    del.forEach(function(k){localStorage.removeItem(k)});
+    Object.keys(o.docs).forEach(function(id){localStorage.setItem("rol:"+id,JSON.stringify(o.docs[id]))});
+  }catch(e){S.restoreError="The backup could not be written. Free some space on your phone and try again.";paint();return}
+  location.reload();
+}
+function vData(){
+  var n=daysSinceBackup(),h='<section class="sec"><p class="rub">Your data</p><div class="card">';
+  h+='<p class="note">Everything you enter is stored on this iPhone only. Back up regularly and save the file to iCloud Drive, so you can restore it if you change or lose your phone.</p>';
+  h+='<p class="note">'+(n==null?"No backup yet.":n===0?"Last backup: today.":"Last backup: "+n+" day"+(n>1?"s":"")+" ago.")+"</p>";
+  h+='<div class="row"><button class="btn" data-act="backup">Back up now</button><label class="btn ghost" for="restore-file" style="cursor:pointer">Restore from a backup</label><input type="file" id="restore-file" accept="application/json,.json" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"></div>';
+  if(S.restoreError)h+='<p class="note neg">'+esc(S.restoreError)+"</p>";
+  if(S.pendingRestore){var c=Object.keys(S.pendingRestore.docs).length,dt=S.pendingRestore.exported?new Date(S.pendingRestore.exported).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}):"an unknown date";
+    h+='<div class="banner over"><p class="note">This replaces everything on this phone with the backup from '+esc(dt)+" ("+c+" records). This cannot be undone.</p><div class=\"row\"><button class=\"btn\" data-act=\"restoreYes\">Replace with backup</button><button class=\"btn ghost\" data-act=\"restoreNo\">Cancel</button></div></div>"}
+  h+="</div></section>";
+  return h
+}
+function backupNudge(){
+  if(!hasEntries())return"";var n=daysSinceBackup();if(n!=null&&n<7)return"";
+  return'<section class="card"><div class="ghead"><h2>Back up your entries</h2><button class="btn sm" data-act="backup">Back up</button></div><p class="note">'+(n==null?"You have not made a backup yet.":"Your last backup was "+n+" days ago.")+" Save it to iCloud Drive to keep your entries safe.</p></section>"
+}
+view.addEventListener("change",function(e){if(e.target&&e.target.id==="restore-file"&&e.target.files&&e.target.files[0])readRestore(e.target.files[0])});
+
+/* ---------- start ---------- */
+(async function boot(){
+  var db=null,user=null,id=null;
+  if(window.claude&&window.claude.use){
+    window.claude.use("sample").then(function(x){S.sample=x;if(x&&S.tab==="budget"&&S.settings)paint()},function(){});
+    try{var r=await Promise.all([window.claude.use("db"),window.claude.use("user")]);db=r[0];user=r[1]}catch(e){}
+    if(db&&user){try{id=await user.id()}catch(e){}}
+  }
+  if(db&&id)col=db.collection("data/users/"+id);else S.local=true;
+  try{
+    var st=await load("settings");S.settings=Object.assign(defaults(),st||{});
+    if(col){var snap=await col.where("kind","==","day").orderBy("date","desc").limit(45).get();snap.docs.forEach(function(x){var v=clone(x.data());S.days[v.date]=Object.assign(newDay(v.date),v)})}
+    else{try{for(var k=0;k<localStorage.length;k++){var key=localStorage.key(k);if(key&&key.indexOf("rol:d_")===0){var v=JSON.parse(localStorage.getItem(key));S.days[v.date]=Object.assign(newDay(v.date),v)}}}catch(e){}}
+  }catch(e){if(!S.settings){S.error=true}}
+  if(S.local&&!S.error)setStatus("");
+  paint();
+})();
+})();
+</script>
+<script>
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
+if(navigator.storage&&navigator.storage.persist){navigator.storage.persist().catch(function(){})}
+</script>
+</body>
+</html>
